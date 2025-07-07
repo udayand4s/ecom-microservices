@@ -26,7 +26,7 @@ A lightweight microservice for user authentication and profile management built 
 ## Installation
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Environment Variables
