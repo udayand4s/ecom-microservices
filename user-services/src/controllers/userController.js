@@ -5,8 +5,8 @@ const connectDB = require('../config/dbConnection');
 
 // Register new user
 const registerUser = async (req, res) => {
+  await connectDB();
   try {
-    await connectDB();
     const { name, email, password } = req.body;
 
     // Check if user already exists
@@ -51,8 +51,8 @@ const registerUser = async (req, res) => {
 
 // Login user
 const loginUser = async (req, res) => {
+  await connectDB();
   try {
-    await connectDB();
     const { email, password } = req.body;
 
     // Find user
@@ -106,9 +106,9 @@ const getUserProfile = async (req, res) => {
 
 // Update user profile
 const updateUserProfile = async (req, res) => {
+  await connectDB();
   try {
-    await connectDB();
-    const { name, phone, address } = req.body;
+    const { name, phone } = req.body;
 
     const user = await User.findById(req.userId);
     if (!user) {
@@ -118,7 +118,7 @@ const updateUserProfile = async (req, res) => {
     // Update fields
     if (name) user.name = name;
     if (phone) user.phone = phone;
-    if (address) user.address = address;
+    
 
     await user.save();
 
