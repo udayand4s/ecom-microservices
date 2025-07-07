@@ -44,12 +44,7 @@ NODE_ENV=development
 
 ### Development
 ```bash
-npm run dev
-```
-
-### Production
-```bash
-npm start
+pnpm start
 ```
 
 ### Docker
@@ -65,6 +60,155 @@ docker run -p 3000:3000 user-service
 #### Register User
 ```http
 POST /api/users/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+#### Login User
+```http
+POST /api/users/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+### Protected Endpoints
+
+All protected endpoints require `Authorization: Bearer <token>` header.
+
+#### Get User Profile
+```http
+GET /api/users/profile
+Authorization: Bearer <token>
+```
+
+#### Update User Profile
+```http
+PUT /api/users/profile
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "name": "John Updated",
+  "phone": "123-456-7890"
+}
+```
+
+#### Get All Users
+```http
+GET /api/users/all
+Authorization: Bearer <token>
+```
+
+### Health Check
+```http
+GET /health
+```
+
+## Response Format
+
+### Success Response
+```json
+{
+  "message": "User created successfully",
+  "user": {
+    "id": "65f1234567890abcdef12345",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "user"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+### Error Response
+```json
+{
+  "error": "User already exists"
+}
+```
+
+
+## User Schema
+
+```javascript
+{
+  name: String,           // Required
+  email: String,          // Required, unique
+  password: String,       // Required, hashed
+  phone: String,          // Optional
+  role: String,           // 'user' or 'admin'
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+## Dependencies
+
+- **express**: Web framework
+- **mongoose**: MongoDB ODM
+- **jsonwebtoken**: JWT implementation
+- **bcryptjs**: Password hashing
+- **cors**: Cross-origin resource sharing
+- **dotenv**: Environment variable loader
+
+## License
+
+MIT
+
+# Product Service
+
+A lightweight microservice for product management.
+
+## Features
+
+- Product management
+- View, delete products
+- RESTful API endpoints
+
+## Installation
+
+```bash
+pnpm install
+```
+
+## Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+PORT=3001
+MONGO_URI=mongodb://mongo:27017/ecommerce_users
+```
+
+## Usage
+
+### Development
+```bash
+pnpm start
+```
+
+### Docker
+```bash
+docker build -t product-service .
+docker run -p 3001:3001 product-service
+```
+
+## API Endpoints
+
+### Public Endpoints
+
+#### Create Product
+```http
+POST /api/product/create
 Content-Type: application/json
 
 {
