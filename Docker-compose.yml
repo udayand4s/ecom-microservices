@@ -3,7 +3,7 @@ version: 3.8
 services:
   user-services:
     build:
-      context: ./userservices
+      context: ./user-services
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
