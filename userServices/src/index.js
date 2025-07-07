@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
 
+
 const app = express();
 
 // Middleware
@@ -19,14 +20,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', service: 'user-service' });
 });
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(process.env.PORT, () => {
-      console.log(`User service running on port ${process.env.PORT}`);
-    });
-  })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-  });
+
+
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`User service running on port ${process.env.PORT || 3000}`);
+});
