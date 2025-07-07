@@ -9,74 +9,186 @@ An Ecommerce microservices platform currently handling-
 5) Notification/ Email Services
 6) Monitoring
 
-🚀 Tech Stack
-Node.js + Express.js
+Uses Docker for orchestrating all services in containers and nginx for reverse proxy
 
-MongoDB (via Mongoose)
+# User Service
 
-JWT Webhooks for authentication
+A lightweight microservice for user authentication and profile management built with Express.js and MongoDB.
 
-Dockerized
+## Features
 
-📦 Running the Service
-Clone the repo and cd into user-service:
+- User registration and authentication
+- JWT-based authorization
+- Profile management
+- Password hashing with bcrypt
+- RESTful API endpoints
 
-bash
-Copy
-Edit
-git clone https://github.com/udayand4s/ecom-microservices
-cd ecom-microservices/user-service
-Setup environment variables in a .env file:
+## Installation
 
-env
-Copy
-Edit
-PORT=3001
-MONGO_URI=mongodb://localhost:27017/userservice
-CLERK_JWKS_URI=https://api.clerk.dev/.well-known/jwks.json
-CLERK_ISSUER=https://clerk.YOUR_DOMAIN.com/
-CLERK_AUDIENCE=your-clerk-client-id
-Start MongoDB (locally or via Docker) and run:
-
-bash
-Copy
-Edit
+```bash
 npm install
+```
+
+## Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+PORT=3000
+MONGO_URI=mongodb://mongo:27017/ecommerce_users
+JWT_SECRET=your-secret-key-here
+NODE_ENV=development
+```
+
+## Usage
+
+### Development
+```bash
+npm run dev
+```
+
+### Production
+```bash
 npm start
-Or use Docker:
+```
 
-bash
-Copy
-Edit
+### Docker
+```bash
 docker build -t user-service .
-docker run --env-file .env -p 3001:3001 user-service
-🔐 Authentication
-This service uses Clerk-issued JWTs. You must pass a valid token in the Authorization header as Bearer <token>.
+docker run -p 3000:3000 user-service
+```
 
-📫 API Endpoints (use Postman or cURL)
-Method	Endpoint	Auth Required	Description
-GET	/	❌ No	Health check message
-GET	/private	✅ Yes	Returns decoded Clerk user payload
+## API Endpoints
 
-🧪 Example Request:
+### Public Endpoints
 
-GET /private
-Headers:
+#### Register User
+```http
+POST /api/users/register
+Content-Type: application/json
 
-makefile
-Copy
-Edit
-Authorization: Bearer <your-clerk-jwt-token>
-Response:
-
-json
-Copy
-Edit
 {
-  "message": "This is a protected route.",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+#### Login User
+```http
+POST /api/users/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+### Protected Endpoints
+
+All protected endpoints require `Authorization: Bearer <token>` header.
+
+#### Get User Profile
+```http
+GET /api/users/profile
+Authorization: Bearer <token>
+```
+
+#### Update User Profile
+```http
+PUT /api/users/profile
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "name": "John Updated",
+  "phone": "123-456-7890"
+}
+```
+
+#### Get All Users
+```http
+GET /api/users/all
+Authorization: Bearer <token>
+```
+
+### Health Check
+```http
+GET /health
+```
+
+## Response Format
+
+### Success Response
+```json
+{
+  "message": "User created successfully",
   "user": {
-    "sub": "user_abc123",
-    "email": "user@example.com",
-    "org_id": "org_xyz"
-  }
+    "id": "65f1234567890abcdef12345",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "user"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+### Error Response
+```json
+{
+  "error": "User already exists"
+}
+```
+
+## Example Usage
+
+### Register and Login Flow
+
+```javascript
+// Register
+const response = await fetch('http://localhost:3001/api/users/register', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    name: 'John Doe',
+    email: 'john@example.com',
+    password: 'password123'
+  })
+});
+
+const { token } = await response.json();
+
+// Use token for protected routes
+const profile = await fetch('http://localhost:3001/api/users/profile', {
+  headers: { 'Authorization': `Bearer ${token}` }
+});
+```
+
+## User Schema
+
+```javascript
+{
+  name: String,           // Required
+  email: String,          // Required, unique
+  password: String,       // Required, hashed
+  phone: String,          // Optional
+  role: String,           // 'user' or 'admin'
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+## Dependencies
+
+- **express**: Web framework
+- **mongoose**: MongoDB ODM
+- **jsonwebtoken**: JWT implementation
+- **bcryptjs**: Password hashing
+- **cors**: Cross-origin resource sharing
+- **dotenv**: Environment variable loader
+
+## License
+
+MIT
 }
