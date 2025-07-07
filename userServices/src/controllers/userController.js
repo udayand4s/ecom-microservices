@@ -52,6 +52,7 @@ const registerUser = async (req, res) => {
 // Login user
 const loginUser = async (req, res) => {
   try {
+    await connectDB();
     const { email, password } = req.body;
 
     // Find user
@@ -90,6 +91,7 @@ const loginUser = async (req, res) => {
 
 // Get user profile
 const getUserProfile = async (req, res) => {
+  await connectDB();
   try {
     const user = await User.findById(req.userId).select('-password');
     if (!user) {
@@ -105,6 +107,7 @@ const getUserProfile = async (req, res) => {
 // Update user profile
 const updateUserProfile = async (req, res) => {
   try {
+    await connectDB();
     const { name, phone, address } = req.body;
 
     const user = await User.findById(req.userId);
@@ -138,6 +141,7 @@ const updateUserProfile = async (req, res) => {
 // Get all users (admin only)
 const getAllUsers = async (req, res) => {
   try {
+    await connectDB();
     const users = await User.find({}).select('-password');
     res.json({ users });
   } catch (error) {
