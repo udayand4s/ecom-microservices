@@ -149,10 +149,34 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+// Verify token and return user info (for other services)
+const verifyToken = async (req, res) => {
+  try {
+    const { token } = req.body;
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+      name: user.name
+    });
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getUserProfile,
   updateUserProfile,
-  getAllUsers
+  getAllUsers,
+  verifyToken
 };

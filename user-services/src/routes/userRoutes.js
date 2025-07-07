@@ -13,6 +13,7 @@ const router = express.Router();
 // Public routes
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.post('/verify-token', verifyToken);
 
 // Protected routes
 router.get('/profile', authMiddleware, getUserProfile);
