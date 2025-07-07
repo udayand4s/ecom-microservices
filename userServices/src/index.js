@@ -1,15 +1,32 @@
-require ('dotenv').config();
-const connectDB = require('./config/dbConnection');
 const express = require('express');
-const app=express();
-const port = process.env.PORT || 3000;
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
 
+const userRoutes = require('./routes/userRoutes');
+
+const app = express();
+
+// Middleware
+app.use(cors());
 app.use(express.json());
-connectDB();
 
-app.get('/', (req, res) => res.send('User Service Running'));
-app.use('/private', authMiddleware, privateRoutes);
+// Routes
+app.use('/api/users', userRoutes);
 
-app.listen(port, () => {
-  console.log(`User Services API listening at http://localhost:${port}`);
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', service: 'user-service' });
 });
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('Connected to MongoDB');
+    app.listen(process.env.PORT, () => {
+      console.log(`User service running on port ${process.env.PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+  });
