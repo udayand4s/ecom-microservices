@@ -9,7 +9,7 @@ const authMiddleware = async (req, res, next) => {
     }
 
     // Call user-service to verify token
-    const response = await axios.post('http://user-services:3000/api/users/verify-token', {
+    const response = await axios.post('http://user-services:3000/api/users/verify-token' || 'http://localhost:3000/api/users/verify-token', {
       token
     });
 

@@ -108,7 +108,7 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
   await connectDB();
   try {
-    const { name, phone } = req.body;
+    const { name, phone, role } = req.body;
 
     const user = await User.findById(req.userId);
     if (!user) {
@@ -118,6 +118,7 @@ const updateUserProfile = async (req, res) => {
     // Update fields
     if (name) user.name = name;
     if (phone) user.phone = phone;
+    if (role) user.role = role;
     
 
     await user.save();

@@ -1,7 +1,7 @@
 const connectDB = require("../config/connectDb")
 const Product = require("../models/product");
 
-// Get all products
+// create products
 const createProduct= async (req, res) => {
     connectDB();
     try {

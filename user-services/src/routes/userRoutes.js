@@ -4,7 +4,8 @@ const {
   loginUser,
   getUserProfile,
   updateUserProfile,
-  getAllUsers
+  getAllUsers,
+  verifyToken
 } = require('../controllers/userController');
 const authMiddleware = require('../middleware/authMiddleware');
 
