@@ -44,12 +44,7 @@ NODE_ENV=development
 
 ### Development
 ```bash
-npm run dev
-```
-
-### Production
-```bash
-npm start
+pnpm start
 ```
 
 ### Docker
@@ -141,29 +136,6 @@ GET /health
 }
 ```
 
-## Example Usage
-
-### Register and Login Flow
-
-```javascript
-// Register
-const response = await fetch('http://localhost:3001/api/users/register', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    name: 'John Doe',
-    email: 'john@example.com',
-    password: 'password123'
-  })
-});
-
-const { token } = await response.json();
-
-// Use token for protected routes
-const profile = await fetch('http://localhost:3001/api/users/profile', {
-  headers: { 'Authorization': `Bearer ${token}` }
-});
-```
 
 ## User Schema
 
@@ -191,4 +163,159 @@ const profile = await fetch('http://localhost:3001/api/users/profile', {
 ## License
 
 MIT
+
+Sure! Below is the updated second half of the README based on the Product Service from the provided GitHub repository. I've made adjustments to ensure it aligns with the structure and features of the Product Service.
+
+---
+
+# Product Service
+
+A lightweight microservice for product management built with Express.js and MongoDB.
+
+## Features
+
+- Product management (create, read, update, delete)
+- RESTful API endpoints for product operations
+- Image upload support for product images
+- Category management for products
+
+## Installation
+
+```bash
+pnpm install
+```
+
+## Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+PORT=3001
+MONGO_URI=mongodb://mongo:27017/ecommerce_products
+JWT_SECRET=your-secret-key-here
+NODE_ENV=development
+```
+
+## Usage
+
+### Development
+```bash
+pnpm start
+```
+
+### Docker
+```bash
+docker build -t product-service .
+docker run -p 3001:3001 product-service
+```
+
+## API Endpoints
+
+### Public Endpoints
+
+#### Create Product
+```http
+POST /api/products
+Content-Type: application/json
+
+{
+  "name": "Product Name",
+  "description": "Product Description",
+  "price": 99.99,
+  "category": "Category ID",
+  "image": "image-url"
 }
+```
+
+#### Get All Products
+```http
+GET /api/products
+```
+
+#### Get Product by ID
+```http
+GET /api/products/:id
+```
+
+### Protected Endpoints
+
+All protected endpoints require `Authorization: Bearer <token>` header.
+
+#### Update Product
+```http
+PUT /api/products/:id
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "name": "Updated Product Name",
+  "description": "Updated Description",
+  "price": 89.99,
+  "category": "Updated Category ID",
+  "image": "updated-image-url"
+}
+```
+
+#### Delete Product
+```http
+DELETE /api/products/:id
+Authorization: Bearer <token>
+```
+
+### Health Check
+```http
+GET /health
+```
+
+## Response Format
+
+### Success Response
+```json
+{
+  "message": "Product created successfully",
+  "product": {
+    "id": "65f1234567890abcdef12345",
+    "name": "Product Name",
+    "description": "Product Description",
+    "price": 99.99,
+    "category": "Category ID",
+    "image": "image-url"
+  }
+}
+```
+
+### Error Response
+```json
+{
+  "error": "Product already exists"
+}
+```
+
+## Product Schema
+
+```javascript
+{
+  name: String,           // Required
+  description: String,    // Required
+  price: Number,          // Required
+  category: {             // Required, reference to Category
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category'
+  },
+  image: String,          // Optional, URL of the product image
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+## Dependencies
+
+- **express**: Web framework
+- **mongoose**: MongoDB ODM
+- **dotenv**: Environment variable loader
+
+## License
+
+MIT
+
+---
