@@ -11,11 +11,16 @@ services:
       - user-services/.env
     depends_on:
       - mongo
+    networks:
+      - ecommerce-network
   
   mongo:
     image: mongo
+    container_name: mongo
     ports:
       - "27017:27017"
+    networks:
+      - ecommerce-network
 
   product-services:
     build:
@@ -27,5 +32,11 @@ services:
       - product-service/.env
     depends_on:
       - mongo
+    networks:
+      - ecommerce-network
+
+networks:
+  ecommerce-network:
+    driver: bridge
 
   
