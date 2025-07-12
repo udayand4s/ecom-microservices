@@ -1,2 +1,3 @@
 user-services/.env*
 product-service/.env*
+order-service/.env*
