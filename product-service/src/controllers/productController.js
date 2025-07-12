@@ -67,7 +67,7 @@ const updateProduct = async (req, res) => {
 const getProducts = async (req, res) => {
     connectDB();
     try {
-        const {id} = req.body
+        const {id} = req.body || req.query;
         
         //get products by id
         if (id) {

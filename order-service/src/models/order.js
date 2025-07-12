@@ -5,14 +5,16 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    productId: {
-        type: String,
-        required: true
-    },
-    quantity: {
-        type: Number,
-        required: true
-    },
+    items: [{
+            productId: {
+            type: String,
+            required: true
+        },
+        quantity: {
+            type: Number,
+            required: true
+        }
+    }],
     cost: {
         type: Number,
         required: true
